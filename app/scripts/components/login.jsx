@@ -16,14 +16,24 @@ class Login extends React.Component {
 
   constructor(props) {
     super(props);
+    var self = this;
+
     this.state = {
       authenticated: false
+    }
+  }
+
+  componentWillMount() {
+    var self = this;
+    if(localStorage.getItem('userToken') !== null){
+      self.setState({authenticated: true});
     }
   }
 
   _signup(event) {
     event.preventDefault();
     var user = $(event.target).serializeObject();
+    var self = this;
     user = {
       username: user.email,
       password: user.password
@@ -31,12 +41,14 @@ class Login extends React.Component {
     $.post(baseUrl + '/users', user).then(function(data){
       console.log('session id', data.sessionToken);
       localStorage.setItem('userToken', data.sessionToken);
+      self.setState({authenticated: true});
     });
   }
 
   _login(event) {
     event.preventDefault();
     var user = $(event.target).serializeObject();
+    var self = this;
     var username = user.email;
     var password = user.password;
 
@@ -47,6 +59,7 @@ class Login extends React.Component {
     $.get(url).then(function(data){
       localStorage.setItem('userToken', data.sessionToken);
       console.log('session id', data.sessionToken);
+      self.setState({authenticated: true});
     });
   }
 
@@ -77,7 +90,7 @@ class Login extends React.Component {
             <input className="btn btn-primary" type="submit" name="" value="Sign Up!" />
           </form>
         </div>
-        <Chat />
+        <Chat authenticated={this.state.authenticated}/>
       </div>
     )
   }
@@ -85,7 +98,7 @@ class Login extends React.Component {
 
 class Chat extends React.Component {
   render() {
-    if(localStorage.getItem('userToken') !== null) {
+    if(this.props.authenticated) {
       return(
         <div className="col-md-6">
           <h1>Oh User!</h1>
