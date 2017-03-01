@@ -86,7 +86,26 @@ class Login extends React.Component {
             <input className="btn btn-primary" type="submit" name="" value="Sign Up!" />
           </form>
         </div>
+        <Chat />
       </div>
+    )
+  }
+}
+
+class Chat extends React.Component {
+  render() {
+    return (
+
+        <div className="col-md-6">
+          <h1>Oh User!</h1>
+          <form>
+            <div className="form-group">
+              <input className="form-control" name="message" id="message" type="text" placeholder="enter message" />
+            </div>
+            <input className="btn btn-primary" type="submit" name="" value="Say Something!" />
+          </form>
+        </div>
+
     )
   }
 }
