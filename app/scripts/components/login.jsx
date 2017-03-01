@@ -39,6 +39,7 @@ class Login extends React.Component {
     };
     $.post(baseUrl + '/users', user).then(function(data){
       console.log('session id', data.sessionToken);
+      localStorage.setItem('userToken', data.sessionToken);
     });
   }
 
@@ -53,8 +54,7 @@ class Login extends React.Component {
             'password=' + encodeURIComponent(password);
 
     $.get(url).then(function(data){
-      var userData = JSON.stringify(data);
-      localStorage.setItem('user', userData);
+      localStorage.setItem('userToken', data.sessionToken);
       console.log('session id', data.sessionToken);
     });
   }
