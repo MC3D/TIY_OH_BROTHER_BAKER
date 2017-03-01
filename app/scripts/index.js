@@ -1,9 +1,9 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+var $ = require('jquery');
+var Backbone = require('backbone');
 
-var Login = require('./components/login.jsx').Login;
+require('./router.js');
+require('./utilities');
 
-ReactDOM.render(
-  React.createElement(Login),
-  document.getElementById('app')
-);
+$(function(){
+  Backbone.history.start();
+})

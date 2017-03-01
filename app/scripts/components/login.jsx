@@ -1,6 +1,8 @@
 var $ = require('jquery');
 var React = require ('react');
 
+// require('./../utilities');
+
 $.fn.serializeObject = function() {
     return this.serializeArray().reduce(function(acum, i) {
       acum[i.name] = i.value;
@@ -8,26 +10,15 @@ $.fn.serializeObject = function() {
     }, {});
   };
 
-function setupAjax(user){
-  $.ajaxSetup({
-    beforeSend: function(xhr){
-      xhr.setRequestHeader("X-Parse-Application-Id", "tiygvl");
-      xhr.setRequestHeader("X-Parse-REST-API-Key", "slumber");
-      if(user){
-        xhr.setRequestHeader("X-Parse-Session-Token", user.sessionToken);
-      }
-    }
-  });
-}
-
-setupAjax();
-
 var baseUrl = 'https://tiny-lasagna-server-new.herokuapp.com';
 
 class Login extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      authenticated: false
+    }
   }
 
   _signup(event) {
@@ -94,8 +85,8 @@ class Login extends React.Component {
 
 class Chat extends React.Component {
   render() {
-    return (
-
+    if(localStorage.getItem('userToken') !== null) {
+      return(
         <div className="col-md-6">
           <h1>Oh User!</h1>
           <form>
@@ -105,7 +96,10 @@ class Chat extends React.Component {
             <input className="btn btn-primary" type="submit" name="" value="Say Something!" />
           </form>
         </div>
-
+      )
+    }
+    return(
+      <div></div>
     )
   }
 }
