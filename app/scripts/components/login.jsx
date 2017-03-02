@@ -10,9 +10,9 @@ class Container extends React.Component {
     var self = this;
 
     this.state = {
-      authenticated: false,
       username: '',
-      password: ''
+      password: '',
+      authenticated: false
     }
 
     this._handleSignup = this._handleSignup.bind(this);
@@ -22,7 +22,7 @@ class Container extends React.Component {
   componentWillMount() {
     var self = this;
     if(localStorage.getItem('userToken') !== null){
-      self.setState({authenticated: true});
+      self.setState({ authenticated: true });
     }
   }
 
@@ -31,7 +31,7 @@ class Container extends React.Component {
     $.post(baseUrl + '/users', user).then(function(data){
       console.log('session id', data.sessionToken);
       localStorage.setItem('userToken', data.sessionToken);
-      self.setState({authenticated: true});
+      self.setState({ authenticated: true });
     });
   }
 
@@ -43,7 +43,7 @@ class Container extends React.Component {
     $.get(url).then(function(data){
       console.log('session id', data.sessionToken);
       localStorage.setItem('userToken', data.sessionToken);
-      self.setState({authenticated: true});
+      self.setState({ authenticated: true });
     });
   }
 
@@ -73,11 +73,11 @@ class Login extends React.Component {
   }
 
   _handleUsername(event) {
-    this.setState({username: event.target.value})
+    this.setState({ username: event.target.value })
   }
 
   _handlePassword(event) {
-    this.setState({password: event.target.value})
+    this.setState({ password: event.target.value })
   }
 
   _handleLogin(event) {
@@ -89,12 +89,12 @@ class Login extends React.Component {
     return (
       <div className="col-md-6">
         <h1>Please Login</h1>
-        <form id="login" onSubmit={this._handleLogin}>
+        <form id="login" onSubmit={ this._handleLogin }>
           <div className="form-group">
-            <input value={this.state.username} onChange={this._handleUsername} className="form-control" name="email" id="email-login" type="email" placeholder="email" />
+            <input value={ this.state.username } onChange={ this._handleUsername } className="form-control" name="email" id="email-login" type="email" placeholder="email" />
           </div>
           <div className="form-group">
-            <input value={this.state.password} onChange={this._handlePassword} className="form-control" name="password" id="password-login" type="password" placeholder="password" />
+            <input value={ this.state.password } onChange={ this._handlePassword } className="form-control" name="password" id="password-login" type="password" placeholder="password" />
           </div>
           <input className="btn btn-primary" type="submit" value="Login" />
         </form>
@@ -118,11 +118,11 @@ class Signup extends React.Component {
   }
 
   _handleUsername(event) {
-    this.setState({username: event.target.value})
+    this.setState({ username: event.target.value })
   }
 
   _handlePassword(event) {
-    this.setState({password: event.target.value})
+    this.setState({ password: event.target.value })
   }
 
   _handleSignup(event) {
@@ -134,12 +134,12 @@ class Signup extends React.Component {
     return (
       <div className="col-md-6">
         <h1>No Account Please Sign Up</h1>
-        <form id="signup" onSubmit={this._handleSignup}>
+        <form id="signup" onSubmit={ this._handleSignup }>
           <div className="form-group">
-            <input value={this.state.username} onChange={this._handleUsername} className="form-control" name="email" id="email-login" type="email" placeholder="email" />
+            <input value={ this.state.username } onChange={ this._handleUsername } className="form-control" name="email" id="email-login" type="email" placeholder="email" />
           </div>
           <div className="form-group">
-            <input value={this.state.password} onChange={this._handlePassword} id="signup-password" className="form-control" type="text" name="password" placeholder="password" />
+            <input value={ this.state.password } onChange={ this._handlePassword } id="signup-password" className="form-control" type="text" name="password" placeholder="password" />
           </div>
           <input className="btn btn-primary" type="submit" name="" value="Sign Up!" />
         </form>
