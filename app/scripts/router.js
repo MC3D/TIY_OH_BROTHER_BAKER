@@ -2,7 +2,7 @@ var Backbone = require('backbone');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var Login = require('./components/login.jsx').Login;
+var Container = require('./components/login.jsx').Container;
 
 var AppRouter = Backbone.Router.extend({
   routes: {
@@ -11,7 +11,7 @@ var AppRouter = Backbone.Router.extend({
 
   index: function(){
     ReactDOM.render(
-      React.createElement(Login),
+      React.createElement(Container),
       document.getElementById('app')
     );
   }

@@ -12,15 +12,19 @@ $.fn.serializeObject = function() {
 
 var baseUrl = 'https://tiny-lasagna-server-new.herokuapp.com';
 
-class Login extends React.Component {
+class Container extends React.Component {
 
   constructor(props) {
     super(props);
     var self = this;
 
     this.state = {
-      authenticated: false
+      authenticated: false,
+      username: '',
+      password: ''
     }
+
+    this._handleSignup = this._handleSignup.bind(this);
   }
 
   componentWillMount() {
@@ -30,14 +34,8 @@ class Login extends React.Component {
     }
   }
 
-  _signup(event) {
-    event.preventDefault();
-    var user = $(event.target).serializeObject();
+  _handleSignup(user) {
     var self = this;
-    user = {
-      username: user.email,
-      password: user.password
-    };
     $.post(baseUrl + '/users', user).then(function(data){
       console.log('session id', data.sessionToken);
       localStorage.setItem('userToken', data.sessionToken);
@@ -66,31 +64,73 @@ class Login extends React.Component {
   render() {
     return (
       <div className="row">
-        <div className="col-md-6">
-          <h1>Please Login</h1>
-          <form id="login" onSubmit={this._login.bind(this)}>
-            <div className="form-group">
-              <input className="form-control" name="email" id="email-login" type="email" placeholder="email" />
-            </div>
-            <div className="form-group">
-              <input className="form-control" name="password" id="password-login" type="password" placeholder="password" />
-            </div>
-            <input className="btn btn-primary" type="submit" value="Login" />
-          </form>
-        </div>
-        <div className="col-md-6">
-          <h1>No Account Please Sign Up</h1>
-          <form id="signup" onSubmit={this._signup.bind(this)}>
-            <div className="form-group">
-              <input className="form-control" name="email" id="email-login" type="email" placeholder="email" />
-            </div>
-            <div className="form-group">
-              <input id="signup-password" className="form-control" type="text" name="password" placeholder="password" />
-            </div>
-            <input className="btn btn-primary" type="submit" name="" value="Sign Up!" />
-          </form>
-        </div>
+        <Login />
+        <Signup handleSignup={this._handleSignup}/>
         <Chat authenticated={this.state.authenticated}/>
+      </div>
+    )
+  }
+}
+
+class Login extends React.Component {
+  render() {
+    return (
+      <div className="col-md-6">
+        <h1>Please Login</h1>
+        <form id="login">
+          <div className="form-group">
+            <input className="form-control" name="email" id="email-login" type="email" placeholder="email" />
+          </div>
+          <div className="form-group">
+            <input className="form-control" name="password" id="password-login" type="password" placeholder="password" />
+          </div>
+          <input className="btn btn-primary" type="submit" value="Login" />
+        </form>
+      </div>
+    )
+  }
+}
+
+class Signup extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: '',
+      password: ''
+    }
+
+    this._handleUsername = this._handleUsername.bind(this);
+    this._handlePassword = this._handlePassword.bind(this);
+    this._handleSignup = this._handleSignup.bind(this);
+  }
+
+  _handleUsername(event) {
+    this.setState({username: event.target.value})
+  }
+
+  _handlePassword(event) {
+    this.setState({password: event.target.value})
+  }
+
+  _handleSignup(event) {
+    event.preventDefault();
+    this.props.handleSignup(this.state)
+  }
+
+  render() {
+    return (
+      <div className="col-md-6">
+        <h1>No Account Please Sign Up</h1>
+        <form id="signup" onSubmit={this._handleSignup}>
+          <div className="form-group">
+            <input value={this.state.username} onChange={this._handleUsername} className="form-control" name="email" id="email-login" type="email" placeholder="email" />
+          </div>
+          <div className="form-group">
+            <input value={this.state.password} onChange={this._handlePassword} id="signup-password" className="form-control" type="text" name="password" placeholder="password" />
+          </div>
+          <input className="btn btn-primary" type="submit" name="" value="Sign Up!" />
+        </form>
       </div>
     )
   }
@@ -118,5 +158,5 @@ class Chat extends React.Component {
 }
 
 module.exports = {
-  Login
+  Container
 }
