@@ -1,15 +1,6 @@
 var $ = require('jquery');
 var React = require ('react');
 
-// require('./../utilities');
-
-$.fn.serializeObject = function() {
-    return this.serializeArray().reduce(function(acum, i) {
-      acum[i.name] = i.value;
-      return acum;
-    }, {});
-  };
-
 var baseUrl = 'https://tiny-lasagna-server-new.herokuapp.com';
 
 class Container extends React.Component {
