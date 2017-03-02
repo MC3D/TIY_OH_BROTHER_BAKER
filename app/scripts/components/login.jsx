@@ -52,7 +52,7 @@ class Container extends React.Component {
       <div className="row">
         <Login handleLogin={ this._handleLogin } />
         <Signup handleSignup={ this._handleSignup } />
-        <Chat authenticated={ this.state.authenticated } />
+        { this.state.authenticated ?  <Chat /> : null }
       </div>
     )
   }
@@ -150,21 +150,16 @@ class Signup extends React.Component {
 
 class Chat extends React.Component {
   render() {
-    if(this.props.authenticated) {
-      return(
-        <div className="col-md-6">
-          <h1>Oh User!</h1>
-          <form>
-            <div className="form-group">
-              <input className="form-control" name="message" id="message" type="text" placeholder="enter message" />
-            </div>
-            <input className="btn btn-primary" type="submit" name="" value="Say Something!" />
-          </form>
-        </div>
-      )
-    }
     return(
-      <div></div>
+      <div className="col-md-6">
+        <h1>Oh User!</h1>
+        <form>
+          <div className="form-group">
+            <input className="form-control" name="message" id="message" type="text" placeholder="enter message" />
+          </div>
+          <input className="btn btn-primary" type="submit" name="" value="Say Something!" />
+        </form>
+      </div>
     )
   }
 }
