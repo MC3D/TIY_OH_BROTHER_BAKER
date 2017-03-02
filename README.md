@@ -1,4 +1,4 @@
-## TIY_OH_USER_WHERE_ART_THOU
+## TIY_OH_USER_WHERE_ART_THOU (STUDENT DEMO)
 
 Learning Objectives
 After completing this assignment, you should…
@@ -21,4 +21,3 @@ Set AJAX Headers
 3. ran npm install
 4. configure parse-dashboard-config.json
 5. npm run dashboard (serves up localhost:4040)
-6.
