@@ -25,6 +25,7 @@ class Container extends React.Component {
     }
 
     this._handleSignup = this._handleSignup.bind(this);
+    this._handleLogin = this._handleLogin.bind(this);
   }
 
   componentWillMount() {
@@ -43,20 +44,14 @@ class Container extends React.Component {
     });
   }
 
-  _login(event) {
-    event.preventDefault();
-    var user = $(event.target).serializeObject();
+  _handleLogin(user) {
     var self = this;
-    var username = user.email;
-    var password = user.password;
-
     var url = baseUrl + '/login?username=' +
-            encodeURIComponent(username) + '&' +
-            'password=' + encodeURIComponent(password);
-
+            encodeURIComponent(user.username) + '&' +
+            'password=' + encodeURIComponent(user.password);
     $.get(url).then(function(data){
-      localStorage.setItem('userToken', data.sessionToken);
       console.log('session id', data.sessionToken);
+      localStorage.setItem('userToken', data.sessionToken);
       self.setState({authenticated: true});
     });
   }
@@ -64,25 +59,51 @@ class Container extends React.Component {
   render() {
     return (
       <div className="row">
-        <Login />
-        <Signup handleSignup={this._handleSignup}/>
-        <Chat authenticated={this.state.authenticated}/>
+        <Login handleLogin={ this._handleLogin } />
+        <Signup handleSignup={ this._handleSignup } />
+        <Chat authenticated={ this.state.authenticated } />
       </div>
     )
   }
 }
 
 class Login extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: '',
+      password: ''
+    }
+
+    this._handleUsername = this._handleUsername.bind(this);
+    this._handlePassword = this._handlePassword.bind(this);
+    this._handleLogin = this._handleLogin.bind(this);
+  }
+
+  _handleUsername(event) {
+    this.setState({username: event.target.value})
+  }
+
+  _handlePassword(event) {
+    this.setState({password: event.target.value})
+  }
+
+  _handleLogin(event) {
+    event.preventDefault();
+    this.props.handleLogin(this.state)
+  }
+
   render() {
     return (
       <div className="col-md-6">
         <h1>Please Login</h1>
-        <form id="login">
+        <form id="login" onSubmit={this._handleLogin}>
           <div className="form-group">
-            <input className="form-control" name="email" id="email-login" type="email" placeholder="email" />
+            <input value={this.state.username} onChange={this._handleUsername} className="form-control" name="email" id="email-login" type="email" placeholder="email" />
           </div>
           <div className="form-group">
-            <input className="form-control" name="password" id="password-login" type="password" placeholder="password" />
+            <input value={this.state.password} onChange={this._handlePassword} className="form-control" name="password" id="password-login" type="password" placeholder="password" />
           </div>
           <input className="btn btn-primary" type="submit" value="Login" />
         </form>
