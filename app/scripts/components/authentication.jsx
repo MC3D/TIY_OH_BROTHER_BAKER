@@ -1,50 +1,33 @@
 var $ = require('jquery');
+var Backbone = require('backbone');
 var React = require ('react');
 
-var baseUrl = 'https://tiny-lasagna-server-new.herokuapp.com';
+var parse = require('../parse');
 
-class Container extends React.Component {
+var User = require('../models/user').User;
+
+class Authentication extends React.Component {
 
   constructor(props) {
     super(props);
-    var self = this;
-
-    this.state = {
-      username: '',
-      password: '',
-      authenticated: false
-    }
 
     this._handleSignup = this._handleSignup.bind(this);
     this._handleLogin = this._handleLogin.bind(this);
   }
 
-  componentWillMount() {
-    var self = this;
-    if(localStorage.getItem('userToken') !== null){
-      self.setState({ authenticated: true });
-    }
+  _handleSignup(credentials) {
+    var user = new User(credentials);
+    // user.save() makes a post request to models base url
+    user.save().then(function(data){
+      localStorage.setItem('user', JSON.stringify(data));
+      Backbone.history.navigate('recipes/', {trigger: true});
+    })
   }
 
-  _handleSignup(user) {
-    var self = this;
-    $.post(baseUrl + '/users', user).then(function(data){
-      console.log('session id', data.sessionToken);
-      localStorage.setItem('userToken', data.sessionToken);
-      self.setState({ authenticated: true });
-    });
-  }
-
-  _handleLogin(user) {
-    var self = this;
-    var url = baseUrl + '/login?username=' +
-            encodeURIComponent(user.username) + '&' +
-            'password=' + encodeURIComponent(user.password);
-    $.get(url).then(function(data){
-      console.log('session id', data.sessionToken);
-      localStorage.setItem('userToken', data.sessionToken);
-      self.setState({ authenticated: true });
-    });
+  _handleLogin(credentials) {
+    User.login(credentials, function(){
+      Backbone.history.navigate('recipes/', { trigger: true })
+    })
   }
 
   render() {
@@ -52,7 +35,6 @@ class Container extends React.Component {
       <div className="row">
         <Login handleLogin={ this._handleLogin } />
         <Signup handleSignup={ this._handleSignup } />
-        { this.state.authenticated ?  <Chat /> : null }
       </div>
     )
   }
@@ -148,22 +130,6 @@ class Signup extends React.Component {
   }
 }
 
-class Chat extends React.Component {
-  render() {
-    return(
-      <div className="col-md-6">
-        <h1>Oh User!</h1>
-        <form>
-          <div className="form-group">
-            <input className="form-control" name="message" id="message" type="text" placeholder="enter message" />
-          </div>
-          <input className="btn btn-primary" type="submit" name="" value="Say Something!" />
-        </form>
-      </div>
-    )
-  }
-}
-
 module.exports = {
-  Container
+  Authentication
 }
