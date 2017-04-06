@@ -4,9 +4,9 @@ var React = require ('react');
 
 var parse = require('../parse');
 
-var User = require('../models/user').User;
+var User = require('../models/user');
 
-class Authentication extends React.Component {
+class Auth extends React.Component {
 
   constructor(props) {
     super(props);
@@ -130,6 +130,4 @@ class Signup extends React.Component {
   }
 }
 
-module.exports = {
-  Authentication
-}
+module.exports = Auth

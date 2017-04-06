@@ -2,34 +2,30 @@ var Backbone = require('backbone');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var parse = require('./parse');
+var User = require('./models/user');
+var RecipeCollection = require('./models/recipe').RecipeCollection;
 
-var Authentication = require('./components/authentication.jsx').Authentication;
-var Recipes = require('./components/recipes.jsx').Recipes;
-
-var User = require('./models/user').User;
+var Auth = require('./components/auth.jsx');
+var Recipes = require('./components/recipes.jsx');
+var AddRecipe = require('./components/add_recipe.jsx');
 
 var Router = Backbone.Router.extend({
   routes: {
     '': 'index',
-    'recipes/': 'recipes'
-  },
-
-  initialize: function() {
-    // set parse headers and configure BASE_API_URL
-    parse.setup({
-      BASE_API_URL: 'https://tiny-lasagna-server-new.herokuapp.com'
-    });
+    'recipes/': 'showRecipes',
+    'recipes/new/': 'addRecipe'
   },
 
   execute: function(callback, args, name) {
     var user = User.current();
 
+      // route user to index route if they are not signed in
     if(!user && name != 'index') {
       this.navigate('', { trigger: true });
       return false;
     }
 
+    // route user to recipes route if they are signed in
     if(user && name == 'index') {
       this.navigate('recipes/', { trigger: true });
       return false;
@@ -40,14 +36,21 @@ var Router = Backbone.Router.extend({
 
   index: function(){
     ReactDOM.render(
-      React.createElement(Authentication, { router: this }),
+      React.createElement(Auth, { router: this }),
       document.getElementById('app')
     );
   },
 
-  recipes: function(){
+  showRecipes: function(){
     ReactDOM.render(
       React.createElement(Recipes),
+      document.getElementById('app')
+    );
+  },
+
+  addRecipe: function() {
+    ReactDOM.render(
+      React.createElement(AddRecipe),
       document.getElementById('app')
     );
   }

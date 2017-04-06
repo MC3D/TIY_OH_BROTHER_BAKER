@@ -14,6 +14,8 @@ class Recipes extends React.Component {
       return (
         <div className="col-sm-6 col-md-4" key={ index }>
           <div className="thumbnail">
+            <label htmlFor="label-test">Click Me</label>
+            <input id="label-test" type="text" />
             <div className="caption">
               <h3>{ item.title }</h3>
               <p>{ item.description }</p>
@@ -32,6 +34,4 @@ class Recipes extends React.Component {
   }
 }
 
-module.exports = {
-  Recipes
-}
+module.exports = Recipes
