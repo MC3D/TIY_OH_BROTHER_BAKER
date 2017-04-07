@@ -16,6 +16,7 @@ var IngredientCollection = ParseCollection.extend({
 
 var Step = ParseModel.extend({
   idAttribute: 'objectId',
+  urlRoot: parse.BASE_API_URL + '/classes/Steps',
   defaults: function() {
     return {
       ingredients: new IngredientCollection(),
@@ -25,38 +26,28 @@ var Step = ParseModel.extend({
 });
 
 var StepCollection = ParseCollection.extend({
-
+  model: Step,
+  baseUrl: parse.BASE_API_URL + '/classes/Steps'
 });
 
 var Recipe = ParseModel.extend({
   idAttribute: 'objectId',
+  urlRoot: parse.BASE_API_URL + '/classes/Recipes',
   defaults: function(){
     return {
-      recipeName: '',
-      recipeBy: '',
-      recipeType: '',
-      prepTime: '',
-      cookTime: '',
-      cookTemp: '',
-      cookDeg: '',
-      amount: '',
-      amountDesc: '',
+      degrees: 'F',
       steps: new StepCollection(),
-      personalNotes: ''
+      private: true
     }
   }
 });
 
 var RecipeCollection = ParseCollection.extend({
   model: Recipe,
-  url: function() {
-    return parse.BASE_API_URL + '/classes/Recipes';
-  },
-  parse: function(data){
-    return data.results;
-  }
+  baseUrl: parse.BASE_API_URL + '/classes/Recipes'
 });
 
 module.exports = {
-  RecipeCollection
+  RecipeCollection,
+  Recipe
 }

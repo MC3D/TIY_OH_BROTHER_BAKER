@@ -13,7 +13,8 @@ var Router = Backbone.Router.extend({
   routes: {
     '': 'index',
     'recipes/': 'showRecipes',
-    'recipes/new/': 'addRecipe'
+    'recipes/new/': 'addRecipe',
+    '*path': 'notFound' // last so that it is the last one to match
   },
 
   execute: function(callback, args, name) {
@@ -53,7 +54,13 @@ var Router = Backbone.Router.extend({
       React.createElement(AddRecipe),
       document.getElementById('app')
     );
-  }
+  },
+
+  notFound: function() {
+      alert('How do you comfort a JavaScript bug?');
+      alert('You console it! :-)');
+      Backbone.history.navigate('', { trigger: true });
+    }
 
 });
 
