@@ -19,15 +19,17 @@ var Step = ParseModel.extend({
   urlRoot: parse.BASE_API_URL + '/classes/Steps',
   defaults: function() {
     return {
-      ingredients: new IngredientCollection(),
-      directions: ''
+      ingredients: new IngredientCollection()
     }
   }
 });
 
 var StepCollection = ParseCollection.extend({
   model: Step,
-  baseUrl: parse.BASE_API_URL + '/classes/Steps'
+  baseUrl: parse.BASE_API_URL + '/classes/Steps',
+  comparator: function(step) {
+    return step.get('count');
+  }
 });
 
 var Recipe = ParseModel.extend({
@@ -49,5 +51,7 @@ var RecipeCollection = ParseCollection.extend({
 
 module.exports = {
   RecipeCollection,
-  Recipe
+  Recipe,
+  StepCollection,
+  Step
 }
