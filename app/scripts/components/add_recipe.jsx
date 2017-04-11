@@ -30,6 +30,12 @@ class Step extends React.Component {
   constructor(props) {
     super(props);
     this._handleInput = this._handleInput.bind(this);
+    this._deleteStep = this._deleteStep.bind(this);
+  }
+
+  _deleteStep(e) {
+    e.preventDefault();
+    this.props.deleteStep(this.props.step);
   }
 
   _handleInput(e) {
@@ -41,7 +47,8 @@ class Step extends React.Component {
   render() {
     return(
       <div>
-        <h3>STEP</h3>
+        <h3>{ `${ 'STEP' + ' ' + this.props.step.get('step')}` }</h3>
+        <input type='button' className='btn btn-danger' value="delete" onClick={ this._deleteStep } />
         <Ingredient />
         <div className="form-group">
           <textarea className="form-control" rows="3" placeholder='What directions go with this step?' name='directions' onChange={ this._handleInput }></textarea>
@@ -66,15 +73,23 @@ class Recipe extends React.Component {
     this._saveRecipe = this._saveRecipe.bind(this);
     this._addStep = this._addStep.bind(this);
     this._updateStep = this._updateStep.bind(this);
+    this._deleteStep = this._deleteStep.bind(this);
   }
 
   componentDidMount() {
     this._addStep();
   }
 
+  _deleteStep(step) {
+    var recipe = this.state.recipe;
+    var steps = recipe.get('steps');
+    steps.remove(step);
+    recipe.set({ steps });
+    this.setState({ recipe });
+  }
+
   _handleInput(e) {
     var recipe = this.state.recipe;
-
     recipe.set({ [e.target.name] : e.target.value });
     this.setState({ recipe });
   }
@@ -94,6 +109,7 @@ class Recipe extends React.Component {
   _addStep(e) {
     var steps = this.state.recipe.get('steps');
     var step = new StepModel();
+    step.set({ step: steps.length + 1 })
     this.setState({ steps: steps.add(step) });
   }
 
@@ -106,7 +122,7 @@ class Recipe extends React.Component {
     let recipe = this.state.recipe;
     let steps = recipe.get('steps').map((step)=>{
       return (
-        <Step key={ step.cid } step={ step } updateStep={ this._updateStep } />
+        <Step key={ step.cid } step={ step } updateStep={ this._updateStep } deleteStep={ this._deleteStep }/>
       )
     });
 
