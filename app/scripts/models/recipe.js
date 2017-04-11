@@ -53,5 +53,6 @@ module.exports = {
   RecipeCollection,
   Recipe,
   StepCollection,
-  Step
+  Step,
+  Ingredient
 }

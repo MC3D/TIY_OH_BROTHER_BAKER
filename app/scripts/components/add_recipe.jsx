@@ -3,6 +3,7 @@ var React = require('react');
 
 var RecipeModel = require('../models/recipe').Recipe;
 var StepModel = require('../models/recipe').Step;
+var IngredientModel = require('../models/recipe').Ingredient;
 
 class Ingredient extends React.Component {
   constructor(props) {
@@ -12,14 +13,18 @@ class Ingredient extends React.Component {
   render() {
     return (
       <div>
-        <div className="form-group">
+        <div className="col-md-3 form-group">
           <input type="text" className="form-control" placeholder="Amount" />
         </div>
-        <div className="form-group">
+        <div className="col-md-3 form-group">
           <input type="text" className="form-control" placeholder="Unit" />
         </div>
-        <div className="form-group">
+        <div className="col-md-3 form-group">
           <input type="text" className="form-control" placeholder="Ingredient" />
+        </div>
+        <div className="col-md-3 form-group">
+          <input type="button" className="btn btn-primary" value="add ingred" onClick={ this.props.addIngredient }/>
+          <input type="button" className="btn btn-danger" value="delete ingred" onClick={ this.props.deleteIngredient } />
         </div>
       </div>
     )
@@ -31,6 +36,10 @@ class Step extends React.Component {
     super(props);
     this._handleInput = this._handleInput.bind(this);
     this._deleteStep = this._deleteStep.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.addIngredient(this.props.step);
   }
 
   _deleteStep(e) {
@@ -45,14 +54,20 @@ class Step extends React.Component {
   }
 
   render() {
+    let step = this.props.step;
+    let ingredients = step.get('ingredients').map((ingredient)=>{
+      return (
+        <Ingredient key={ ingredient.cid } ingredient={ ingredient } deleteIngredient={ () => this.props.deleteIngredient(ingredient, this.props.step) } addIngredient={ () => this.props.addIngredient(this.props.step) } />
+      )
+    });
     return(
       <div>
         <h3>{ `${ 'STEP' + ' ' + this.props.step.get('step')}` }</h3>
-        <input type='button' className='btn btn-danger' value="delete" onClick={ this._deleteStep } />
-        <Ingredient />
+        { ingredients }
         <div className="form-group">
           <textarea className="form-control" rows="3" placeholder='What directions go with this step?' name='directions' onChange={ this._handleInput }></textarea>
         </div>
+        <input type='button' className='btn btn-danger' value="delete" onClick={ this._deleteStep } />
       </div>
     )
   }
@@ -74,18 +89,12 @@ class Recipe extends React.Component {
     this._addStep = this._addStep.bind(this);
     this._updateStep = this._updateStep.bind(this);
     this._deleteStep = this._deleteStep.bind(this);
+    this._addIngredient = this._addIngredient.bind(this);
+    this._deleteIngredient = this._deleteIngredient.bind(this);
   }
 
   componentDidMount() {
     this._addStep();
-  }
-
-  _deleteStep(step) {
-    var recipe = this.state.recipe;
-    var steps = recipe.get('steps');
-    steps.remove(step);
-    recipe.set({ steps });
-    this.setState({ recipe });
   }
 
   _handleInput(e) {
@@ -109,8 +118,40 @@ class Recipe extends React.Component {
   _addStep(e) {
     var steps = this.state.recipe.get('steps');
     var step = new StepModel();
-    step.set({ step: steps.length + 1 })
+    step.set({ step: steps.length + 1 });
     this.setState({ steps: steps.add(step) });
+  }
+
+  _addIngredient(step) {
+    var recipe = this.state.recipe;
+    var steps = recipe.get('steps');
+    var ingredients = step.get('ingredients');
+    var ingredient = new IngredientModel();
+    ingredient.set({ ingredient: ingredients.length + 1 });
+    ingredients.add(ingredient);
+    step.set({ ingredients });
+    steps.add(step);
+    recipe.set({ steps});
+    this.setState({ recipe });
+  }
+
+  _deleteIngredient(ingredient, step) {
+    var recipe = this.state.recipe;
+    var steps = recipe.get('steps');
+    var ingredients = step.get('ingredients');
+    ingredients.remove(ingredient);
+    step.set({ ingredients });
+    steps.add(step);
+    recipe.set({ steps });
+    this.setState({ recipe });
+  }
+
+  _deleteStep(step) {
+    var recipe = this.state.recipe;
+    var steps = recipe.get('steps');
+    steps.remove(step);
+    recipe.set({ steps });
+    this.setState({ recipe });
   }
 
   _updateStep(step) {
@@ -122,7 +163,7 @@ class Recipe extends React.Component {
     let recipe = this.state.recipe;
     let steps = recipe.get('steps').map((step)=>{
       return (
-        <Step key={ step.cid } step={ step } updateStep={ this._updateStep } deleteStep={ this._deleteStep }/>
+        <Step key={ step.cid } step={ step } updateStep={ this._updateStep } deleteStep={ this._deleteStep } addIngredient={ this._addIngredient } deleteIngredient={ this._deleteIngredient }/>
       )
     });
 
