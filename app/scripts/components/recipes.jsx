@@ -1,34 +1,36 @@
 var React = require('react');
 
+var RecipeCollection = require('../models/recipe').RecipeCollection;
+
 class Recipes extends React.Component {
-  componentWillMount() {
-    // this.props.fetchItems();
+  constructor(props){
+    super(props);
+
+    var collection = new RecipeCollection();
+
+    collection.fetch().then(() => {
+      this.setState({ collection });
+    });
+
+    this.state = {
+      collection
+    }
   }
 
   render() {
-    let items = [ { title:'new recipe', description: 'd adskjfa dskfjadfkja sdfjadsf', rating: 5 } ];
-    if(!items) {
-      return <div>Loading ...</div>
-    }
-    items = items.map(function(item, index){
+    var recipes = this.state.collection.map(function(recipe){
+      console.log('recipe', recipe);
       return (
-        <div className="col-sm-6 col-md-4" key={ index }>
-          <div className="thumbnail">
-            <label htmlFor="label-test">Click Me</label>
-            <input id="label-test" type="text" />
-            <div className="caption">
-              <h3>{ item.title }</h3>
-              <p>{ item.description }</p>
-              <span>{ item.rating }</span>
-              <p><a href="#" className="btn btn-primary" role="button">Button</a> <a href="#" className="btn btn-default" role="button">Button</a></p>
-            </div>
-          </div>
+        <div key={recipe.cid} className="col-xs-6 col-md-3">
+          <a href={`#recipes/edit/${recipe.id}/`} className="thumbnail">
+            <img src='images/img_frog.jpg' alt="..." />
+          </a>
         </div>
       )
     });
     return (
       <div className="row">
-        { items }
+        { recipes }
       </div>
     )
   }
