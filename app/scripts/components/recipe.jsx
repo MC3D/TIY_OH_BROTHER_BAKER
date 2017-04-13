@@ -209,10 +209,10 @@ class RecipeForm extends React.Component {
           </label>
         </div>
         <div className="form-group">
-          <select className="form-control" onChange={ this._handleInput } name='category' >
+          <select className="form-control" onChange={ this._handleInput } name='category' value={recipe.get('category')} >
             <option>Recipe Category</option>
             <option>Appetizer</option>
-            <option>Breakfast</option>
+            <option >Breakfast</option>
             <option>Dessert</option>
             <option>Dinner</option>
             <option>Lunch</option>
