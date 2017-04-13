@@ -11,7 +11,7 @@ var parse = {
         xhr.setRequestHeader("X-Parse-REST-API-Key", "slumber");
 
         if (config.sessionId) {
-          xhr.setRequestHeader("X-Parse-Session-Token", sessionId);
+          xhr.setRequestHeader("X-Parse-Session-Token", config.sessionId);
         }
       }
     });

@@ -7,13 +7,14 @@ var RecipeCollection = require('./models/recipe').RecipeCollection;
 
 var Auth = require('./components/auth.jsx');
 var Recipes = require('./components/recipes.jsx');
-var AddRecipe = require('./components/add_recipe.jsx');
+var Recipe = require('./components/recipe.jsx');
 
 var Router = Backbone.Router.extend({
   routes: {
     '': 'index',
     'recipes/': 'showRecipes',
-    'recipes/new/': 'addRecipe',
+    'recipes/add/': 'addRecipe',
+    'recipes/edit/:id/': 'editRecipe',
     '*path': 'notFound' // last so that it is the last one to match
   },
 
@@ -51,7 +52,14 @@ var Router = Backbone.Router.extend({
 
   addRecipe: function() {
     ReactDOM.render(
-      React.createElement(AddRecipe),
+      React.createElement(Recipe),
+      document.getElementById('app')
+    );
+  },
+
+  editRecipe: function(id) {
+    ReactDOM.render(
+      React.createElement(Recipe, { id: id }),
       document.getElementById('app')
     );
   },
