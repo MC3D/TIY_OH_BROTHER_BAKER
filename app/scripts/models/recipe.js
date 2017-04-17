@@ -5,12 +5,12 @@ var ParseModel = require('../parse').ParseModel;
 var ParseCollection = require('../parse').ParseCollection;
 
 var Ingredient = ParseModel.extend({
-  // objectID is the parse id
   idAttribute: 'objectId',
   urlRoot: parse.BASE_API_URL + '/classes/Ingredients'
 });
 
 var IngredientCollection = ParseCollection.extend({
+  model: Ingredient,
   baseUrl: parse.BASE_API_URL + '/classes/Ingredients'
 });
 
@@ -21,15 +21,16 @@ var Step = ParseModel.extend({
     return {
       ingredients: new IngredientCollection()
     }
+  },
+  parse: function(data) {
+    data.ingredients = new IngredientCollection(data.ingredients);
+    return data;
   }
 });
 
 var StepCollection = ParseCollection.extend({
   model: Step,
-  baseUrl: parse.BASE_API_URL + '/classes/Steps',
-  comparator: function(step) {
-    return step.get('count');
-  }
+  baseUrl: parse.BASE_API_URL + '/classes/Steps'
 });
 
 var Recipe = ParseModel.extend({
@@ -41,6 +42,15 @@ var Recipe = ParseModel.extend({
       steps: new StepCollection(),
       private: true
     }
+  },
+  parse: function(data) {
+    data.steps = new StepCollection(data.steps);
+    data.steps.forEach(function(step){
+      var ingredients = step.get('ingredients');
+      ingredients = new IngredientCollection(ingredients);
+      step.set({ ingredients });
+    });
+    return data;
   }
 });
 

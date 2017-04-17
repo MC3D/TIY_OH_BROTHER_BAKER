@@ -8,7 +8,7 @@ var StepCollection = require('../models/recipe').StepCollection;
 var Ingredient = require('../models/recipe').Ingredient;
 var IngredientCollection = require('../models/recipe').IngredientCollection;
 
-class IngredientForm extends React.Component {
+class IngredientListItem extends React.Component {
   constructor(props) {
     super(props)
   }
@@ -33,7 +33,7 @@ class IngredientForm extends React.Component {
   }
 }
 
-class StepForm extends React.Component {
+class StepListItem extends React.Component {
   constructor(props) {
     super(props);
     this._handleInput = this._handleInput.bind(this);
@@ -54,7 +54,7 @@ class StepForm extends React.Component {
     let step = this.props.step;
     let ingredients = step.get('ingredients').map((ingredient)=>{
       return (
-        <IngredientForm key={ ingredient.cid } ingredient={ ingredient } deleteIngredient={ () => this.props.deleteIngredient(this.props.step, ingredient) } />
+        <IngredientListItem key={ ingredient.cid } ingredient={ ingredient } deleteIngredient={ () => this.props.deleteIngredient(this.props.step, ingredient) } />
       )
     });
 
@@ -94,15 +94,8 @@ class RecipeForm extends React.Component {
     if(this.props.id) {
       recipe.set({ objectId: this.props.id });
       recipe.fetch().then(()=>{
-        var steps = new StepCollection(recipe.get('steps'));
-        steps.map((step) => {
-          var ingredients = new IngredientCollection(step.get('ingredients'));
-          step.set({ ingredients });
-          return
-        })
-        recipe.set({ steps });
         this.setState({ recipe });
-      })
+      });
     }
 
     this.state = {
@@ -183,7 +176,7 @@ class RecipeForm extends React.Component {
     let ingredient = new Ingredient();
     let steps = this.state.recipe.get('steps').map((step)=>{
       return (
-        <StepForm key={ step.cid } step={ step } ingredient={ ingredient } updateStep={ this._updateStep } deleteStep={ this._deleteStep } addIngredient={ this._addIngredient } deleteIngredient={ this._deleteIngredient }/>
+        <StepListItem key={ step.cid } step={ step } ingredient={ ingredient } updateStep={ this._updateStep } deleteStep={ this._deleteStep } addIngredient={ this._addIngredient } deleteIngredient={ this._deleteIngredient }/>
       )
     });
 
