@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var React = require('react');
+var Backbone = require('backbone');
 var octicons = require('react-octicons');
 
 var Recipe = require('../models/recipe').Recipe;
@@ -60,7 +61,7 @@ class StepListItem extends React.Component {
 
     return(
       <div className='well'>
-        <h3><span>STEP</span><octicons.TrashcanIcon className='pull-right' onClick={ () => this.props.deleteStep(this.props.step) } /></h3>
+        <h3><span>STEP</span><octicons.TrashcanIcon className='pull-right cursor-pointer' onClick={ () => this.props.deleteStep(this.props.step) } /></h3>
         { ingredients }
         <div className="flex-row-center">
           <div className="form-group inline">
@@ -105,6 +106,7 @@ class RecipeForm extends React.Component {
     this._togglePermissions = this._togglePermissions.bind(this);
     this._handleInput = this._handleInput.bind(this);
     this._saveRecipe = this._saveRecipe.bind(this);
+    this._deleteRecipe = this._deleteRecipe.bind(this);
     this._addStep = this._addStep.bind(this);
     this._updateStep = this._updateStep.bind(this);
     this._deleteStep = this._deleteStep.bind(this);
@@ -160,7 +162,6 @@ class RecipeForm extends React.Component {
   _deleteIngredient(step, ingredient) {
     var steps = this.state.recipe.get('steps');
     step.get('ingredients').remove(ingredient);
-    console.log(steps);
     steps.add(step);
     this.setState({ [this.state.recipe.get('steps')]: steps })
   }
@@ -168,7 +169,17 @@ class RecipeForm extends React.Component {
   _saveRecipe(e) {
     e.preventDefault();
     var recipe = this.state.recipe;
-    recipe.save();
+    recipe.save().then(() => {
+      Backbone.history.navigate('recipes/', {trigger: true});
+    });
+  }
+
+  _deleteRecipe(e) {
+    e.preventDefault();
+    var recipe = this.state.recipe;
+    recipe.destroy().then(() => {
+      Backbone.history.navigate('recipes/', {trigger: true});
+    });
   }
 
   render() {
@@ -181,9 +192,9 @@ class RecipeForm extends React.Component {
     });
 
     return (
-      <form className="form" onSubmit={ this._saveRecipe }>
+      <form className="form well" onSubmit={ this._saveRecipe }>
         <div className="form-group">
-          <h3>Basic Info</h3>
+          <h3><span>BASIC INFO</span><octicons.TrashcanIcon className='pull-right cursor-pointer' onClick={ this._deleteRecipe } /></h3>
         </div>
         <div className="form-group">
           <input type="text" className="form-control" placeholder="Recipe Name" onChange={ this._handleInput } value={ recipe.get('name') } name='name' />
@@ -242,7 +253,7 @@ class RecipeForm extends React.Component {
         </div>
 
         <div className="form-group">
-          <h3>Personal Notes</h3>
+          <h3>PERSONAL NOTES</h3>
         </div>
         <div className="form-group">
           <textarea className="form-control" rows="3" onChange={ this._handleInput }value={ recipe.get('notes') } name='notes'></textarea>
